@@ -33,13 +33,15 @@
             <input type="text" id="entryTime" readonly style="background-color: #eef2f5; font-weight: bold; color: #2c3e50;">
         </div>
 
+        <!-- અહિયાં id બદલીને 'userName' કર્યું છે જેથી JavaScript માં ભૂલ ન આવે -->
         <div class="form-group">
-           <select  id="Division" onchange="ToggleEvent()" required>
+            <label for="userName">Select Name:</label>
+            <select id="userName" required>
                 <option value="">-- Select Name --</option>
                 <option value="Rutul Patel (prod)">Rutul Patel(prod)</option>
                 <option value="Meet Patel  (prod)">Meet Patel(prod)</option>
-                 <option value="Nayshar Shah  (prod)">Nayshar Shah(prod)</option>
-                  <option value="Dhaval Prajapati  (QA)">Dhaval Prajapati(QA)</option>
+                <option value="Nayshar Shah  (prod)">Nayshar Shah(prod)</option>
+                <option value="Dhaval Prajapati  (QA)">Dhaval Prajapati(QA)</option>
             </select>
         </div>
 
@@ -149,7 +151,9 @@
     function saveData() {
         let date = document.getElementById("entryDate").value;
         let time = document.getElementById("entryTime").value;
-        let name = document.getElementById("userName").value.trim();
+        
+        // અહિયાં સાચો ID 'userName' પકડવામાં આવ્યો છે
+        let name = document.getElementById("userName").value;
         let division = document.getElementById("division").value;
         let subDivision = document.getElementById("subDivision").value;
         let roomNumber = document.getElementById("roomNumber").value.trim();
@@ -157,7 +161,8 @@
         let rhValue = document.getElementById("rhValue").value.trim();
         let problem = document.getElementById("problemText").value.trim();
 
-        if (name === "") { alert("Please enter your name!"); return; }
+        // વેલિડેશન ચેક
+        if (name === "") { alert("Please select your name!"); return; }
         if (division === "") { alert("Please choose division!"); return; }
         if (subDivision === "") { alert("Please choose sub division!"); return; }
         if (roomNumber === "" || temperature === "" || rhValue === "") {
@@ -180,8 +185,7 @@
             problem: problem === "" ? "No problem" : problem
         };
 
-        // તમારી સાચી વેબ એપ લિંક અહીં સેટ કરી દીધી છે
-        const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw0dCZ6qOA3lwh5JGdDCG5A_5hgsi0zOZw8tBrOfWuqBc7gBTUNHCuqemle_uf-njntkA/exec";
+        const googleScriptUrl = "https://google.com";
 
         fetch(googleScriptUrl, {
             method: "POST",
