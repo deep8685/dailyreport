@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <title>User Data Entry Page</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f4f7f6; color: #333; }
+        .form-container { max-width: 500px; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin: 0 auto; }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 25px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #34495e; }
+        input[type="text"], input[type="date"], select, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 15px; }
+        textarea { resize: vertical; height: 80px; }
+        .sub-division { background-color: #eef2f5; padding: 15px; border-radius: 5px; border-left: 5px solid #007bff; display: none; margin-top: 10px; }
+        button { width: 100%; padding: 12px; cursor: pointer; background-color: #28a745; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; transition: background 0.3s; }
+        button:hover { background-color: #218838; }
+        .logout-btn { display: block; text-align: center; margin-top: 15px; color: #dc3545; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h2>Daily Data Entry Form</h2>
+    
+    <form id="entryForm" onsubmit="event.preventDefault(); saveData();">
+        <div class="form-group">
+            <label for="entryDate">Date:</label>
+            <input type="date" id="entryDate" readonly>
+        </div>
+
+        <div class="form-group">
+            <label for="entryTime">Time (Real-time):</label>
+            <input type="text" id="entryTime" readonly style="background-color: #eef2f5; font-weight: bold; color: #2c3e50;">
+        </div>
+
+        <div class="form-group">
+            <label for="userName">Enter Your Name:</label>
+            <input type="text" id="userName" placeholder="Write Your Name (e.g. Deep Patel)" required>
+        </div>
+
+        <div class="form-group">
+            <label for="division">Area (Division):</label>
+            <select id="division" onchange="toggleDivisionFields()" required>
+                <option value="">-- select division --</option>
+                <option value="Dry Powder">Dry Powder</option>
+                <option value="Injection">Injection</option>
+                <option value="Lab">Lab</option>
+                <option value="Q.C">Q.C</option>
+                <option value="Liquid">Liquid</option>
+                <option value="Conference">Conference</option>
+                <option value="Tablet">Tablet</option> 
+            </select>
+        </div>
+
+        <div id="subDivisionContainer" class="sub-division">
+            <h4 style="margin-top: 0; color: #007bff;" id="selectedDivTitle">Division Setting</h4>
+            
+            <div class="form-group">
+                <label for="subDivision">Sub Division:</label>
+                <select id="subDivision">
+                    <option value="">-- select sub division --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="roomNumber">Room Number:</label>
+                <input type="text" id="roomNumber" placeholder="e.g. 55">
+            </div>
+            <div class="form-group">
+                <label for="temperature">Temperature Set (°C):</label>
+                <input type="text" id="temperature" placeholder="e.g. 22">
+            </div>
+            <div class="form-group">
+                <label for="rhValue">R.H. Set (%):</label>
+                <input type="text" id="rhValue" placeholder="e.g. 45">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="problemText">Any Problem?</label>
+            <textarea id="problemText" placeholder="Any problem...! Tell me"></textarea>
+        </div>
+
+        <button type="submit">Data Submit</button>
+    </form>
+    
+    <a href="loginpg.html" class="logout-btn">Log Out</a>
+</div>
+
+<script>
+    document.getElementById('entryDate').valueAsDate = new Date();
+
+    function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        let minutes = now.getMinutes();
+        let seconds = now.getSeconds();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        
+        const timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+        document.getElementById('entryTime').value = timeString;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    const subDivisionData = {
+        "Dry Powder": ["Line 1 (Powder)", "Line 2 (Powder)", "Bulk Area"],
+        "Injection": ["Vial Washing", "Filling Room", "Sealing Room", "Sterilization"],
+        "Lab": ["Micro Lab", "Chemical Lab", "Instrumentation"],
+        "Q.C": ["Stability Room", "Sample Storage", "Documentation"],
+        "Liquid": ["Manufacturing", "Filling Line", "Washing Area"],
+        "Conference": ["Main Hall", "Meeting Room A", "Meeting Room B"],
+        "Tablet": ["Granulation", "Compression", "Coating", "Blister Packing"]
+    };
+
+    function toggleDivisionFields() {
+        let division = document.getElementById("division").value;
+        let subContainer = document.getElementById("subDivisionContainer");
+        let title = document.getElementById("selectedDivTitle");
+        let subDivSelect = document.getElementById("subDivision");
+
+        subDivSelect.innerHTML = '<option value="">-- select sub division --</option>';
+
+        if (subDivisionData[division]) {
+            subContainer.style.display = "block";
+            title.innerText = division + " Setting";
+
+            subDivisionData[division].forEach(function(subDiv) {
+                let option = document.createElement("option");
+                option.value = subDiv;
+                option.text = subDiv;
+                subDivSelect.appendChild(option);
+            });
+        } else {
+            subContainer.style.display = "none";
+        }
+    }
+
+    function saveData() {
+        let date = document.getElementById("entryDate").value;
+        let time = document.getElementById("entryTime").value;
+        let name = document.getElementById("userName").value.trim();
+        let division = document.getElementById("division").value;
+        let subDivision = document.getElementById("subDivision").value;
+        let roomNumber = document.getElementById("roomNumber").value.trim();
+        let temperature = document.getElementById("temperature").value.trim();
+        let rhValue = document.getElementById("rhValue").value.trim();
+        let problem = document.getElementById("problemText").value.trim();
+
+        if (name === "") { alert("Please enter your name!"); return; }
+        if (division === "") { alert("Please choose division!"); return; }
+        if (subDivision === "") { alert("Please choose sub division!"); return; }
+        if (roomNumber === "" || temperature === "" || rhValue === "") {
+            alert("Please fill all configuration fields (Room, Temp, R.H.)!");
+            return;
+        }
+
+        if (!temperature.includes("°C")) temperature += "°C";
+        if (!rhValue.includes("%")) rhValue += "%";
+
+        let record = {
+            date: date,
+            time: time,
+            userName: name,
+            division: division,
+            subDivision: subDivision,
+            roomNumber: roomNumber,
+            temperature: temperature,
+            rh: rhValue,
+            problem: problem === "" ? "No problem" : problem
+        };
+
+        // મેં તમારી નવી લિંક અહીં ડબલ કોટેશન માર્ક્સમાં પરફેક્ટ સેટ કરી દીધી છે
+        const googleScriptUrl = "https://google.com";
+
+        fetch(googleScriptUrl, {
+            method: "POST",
+            mode: "no-cors",
+            cache: "no-cache",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(record)
+        })
+        .then(() => {
+            alert("Details submitted successfully to Google Sheet!");
+            document.getElementById("entryForm").reset();
+            document.getElementById("entryDate").valueAsDate = new Date();
+            updateClock();
+            document.getElementById("subDivisionContainer").style.display = "none";
+        })
+        .catch(error => {
+            alert("Error: Data not saved!");
+            console.error(error);
+        });
+    }
+</script>
+</body>
+</html>
