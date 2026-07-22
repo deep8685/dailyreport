@@ -33,7 +33,6 @@
             <input type="text" id="entryTime" readonly style="background-color: #eef2f5; font-weight: bold; color: #2c3e50;">
         </div>
 
-        <!-- અહિયાં id બદલીને 'userName' કર્યું છે જેથી JavaScript માં ભૂલ ન આવે -->
         <div class="form-group">
             <label for="userName">Select Name:</label>
             <select id="userName" required>
@@ -152,7 +151,7 @@
         let date = document.getElementById("entryDate").value;
         let time = document.getElementById("entryTime").value;
         
-        // અહિયાં સાચો ID 'userName' પકડવામાં આવ્યો છે
+       
         let name = document.getElementById("userName").value;
         let division = document.getElementById("division").value;
         let subDivision = document.getElementById("subDivision").value;
@@ -161,7 +160,7 @@
         let rhValue = document.getElementById("rhValue").value.trim();
         let problem = document.getElementById("problemText").value.trim();
 
-        // વેલિડેશન ચેક
+       
         if (name === "") { alert("Please select your name!"); return; }
         if (division === "") { alert("Please choose division!"); return; }
         if (subDivision === "") { alert("Please choose sub division!"); return; }
